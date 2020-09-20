@@ -16,11 +16,19 @@ contract TestPepeCore is IPepeCore {
         return allSigs;
     }
 
+    function setNumSigsOwned(bytes32 sig, uint256 count) public {
+        ownerToSigToCount[msg.sender][sig] = count;
+    }
+
     function getNumSigsOwned(bytes32 sig) public view override returns (uint256) {
-        return 0;
+        return ownerToSigToCount[msg.sender][sig];
+    }
+
+    function setNumSigs(bytes32 sig, uint256 count) public {
+        sigToCount[sig] = count;
     }
 
     function getNumSigs(bytes32 sig) public view override returns (uint256) {
-        return 0;
+        return sigToCount[sig];
     }
 }
