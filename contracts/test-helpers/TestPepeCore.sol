@@ -1,4 +1,5 @@
-pragma solidity ^0.6.8;
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.7.1;
 
 import "../IPepeCore.sol";
 
@@ -7,19 +8,19 @@ contract TestPepeCore is IPepeCore {
     mapping(address => mapping(bytes32 => uint256)) ownerToSigToCount;
     mapping(bytes32 => uint256) sigToCount;
 
-    constructor(bytes32[] memory _allSigs) public {
+    constructor(bytes32[] memory _allSigs) {
         allSigs = _allSigs;
     }
 
-    function getAllSigs() public view returns (bytes32[] memory) {
+    function getAllSigs() public view override returns (bytes32[] memory) {
         return allSigs;
     }
 
-    function getNumSigsOwned(bytes32 sig) public view returns (uint256) {
+    function getNumSigsOwned(bytes32 sig) public view override returns (uint256) {
         return 0;
     }
 
-    function getNumSigs(bytes32 sig) public view returns (uint256) {
+    function getNumSigs(bytes32 sig) public view override returns (uint256) {
         return 0;
     }
 }

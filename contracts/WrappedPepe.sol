@@ -1,4 +1,5 @@
-pragma solidity ^0.6.8;
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.7.1;
 
 import "@nomiclabs/buidler/console.sol";
 
@@ -7,7 +8,7 @@ import "./IPepeCore.sol";
 contract WrappedPepe {
     IPepeCore public pepeCore;
 
-    constructor(IPepeCore _pepeCore) public {
+    constructor(IPepeCore _pepeCore) {
         pepeCore = _pepeCore;
     }
 

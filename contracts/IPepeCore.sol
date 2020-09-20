@@ -1,7 +1,8 @@
-pragma solidity ^0.6.8;
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.7.1;
 
 interface IPepeCore {
-    function getAllSigs() public view returns (bytes32[] memory);
-    function getNumSigsOwned(bytes32 sig) public view returns (uint256);
-    function getNumSigs(bytes32 sig) public view returns (uint256);
+    function getAllSigs() external view returns (bytes32[] memory);
+    function getNumSigsOwned(bytes32 sig) external view returns (uint256);
+    function getNumSigs(bytes32 sig) external view returns (uint256);
 }
