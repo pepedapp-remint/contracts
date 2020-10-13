@@ -4,10 +4,20 @@ pragma solidity =0.6.11;
 import "@openzeppelin/contracts/cryptography/MerkleProof.sol";
 
 contract Minter {
+    event Claimed(
+        uint256 index,
+        bytes32 sig,
+        address account,
+        uint256 count
+    );
+
     bytes32 public immutable merkleRoot;
     address public immutable tokenAddress;
 
     mapping(uint256 => bool) public claimed;
+
+    mapping(bytes32 => uint256) public sigToTokenId;
+    uint256 public nextTokenId = 1;
 
     constructor(bytes32 _merkleRoot, address _tokenAddress) public {
         merkleRoot = _merkleRoot;
@@ -41,6 +51,18 @@ contract Minter {
         bytes32 node = makeNode(index, sig, account, count);
         require(merkleVerify(node, proof), "Minter: merkle verification failed");
 
-        // TODO: id mapping for token itself
+        if (sigToTokenId[sig] == 0) {
+            sigToTokenId[sig] = nextTokenId;
+            nextTokenId++;
+        }
+        uint256 tokenId = sigToTokenId[sig];
+        (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
+            bytes4(keccak256("mint(address,uint256,uint256)")),
+            account,
+            tokenId,
+            count
+        ));
+        require(success, "Minter: Failed to mint.");
+        emit Claimed(index, sig, account, count);
     }
 }
