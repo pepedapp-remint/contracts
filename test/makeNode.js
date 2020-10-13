@@ -5,19 +5,19 @@ describe("makeNode", function() {
 
   // NOTE: from https://github.com/wrapped-pepes/airdrop
   const testValues = {
-    '0x1513e50cda180dcadc6208a37244834c7d9005a596606c6d6c8a26ded9ad901b':
+    '0xd49332e4f3b92342001b631b66f95d6a6a6bf6ec306df7414f4e2be926fb9928':
       [0,'0x01465b5a079a742e66ef3e6184ef6d125eaa1de8201339cf32503c32ac1624e8','0x13154CE2844490BfA5E0FE038149A90e84F56f13',1],
 
-    '0x5aac13476c63689363cad2069669f2e76a91e4f86e3ea095e81e2f97125d9afa':
+    '0x25d6a00e5c158fa9916393788f8c51b03a10a016bb62423618e1666b238c39bd':
       [1,'0x01465b5a079a742e66ef3e6184ef6d125eaa1de8201339cf32503c32ac1624e8','0x433A15f56e95Ee632dc690C032B5B2F7de447446',33],
 
-    '0x3facc8cef7050c6fbb133b06fd057b3aef940143a77d186880a6fe5af20ff511':
+    '0xc2fd78394ac23461309bcad6b514dfa259a7b5db18fc2b2b08d53ea1451d0491':
       [2912,'0xfdace08abdccfb2ab62a6f0fd964bc1e51419ae4df69f473f2ed2738d8280443', '0xf7dBFe7dcFBA501464008554e7c5EddE8ab7B0ff', 27]
   }
 
   it("should work as expected on actual values", async function() {
     const Minter = await ethers.getContractFactory("Minter");
-    const minter = await Minter.deploy(testRoot);
+    const minter = await Minter.deploy(testRoot, '0x433A15f56e95Ee632dc690C032B5B2F7de447446');
 
     for (const root in testValues) {
       const tuple = testValues[root]
