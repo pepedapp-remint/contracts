@@ -24,7 +24,7 @@ contract Minter {
 
         uint256 numSigs = _orderedSigs.length;
         for (uint256 i = 0; i < numSigs; i++) {
-            sigToTokenId[_orderedSigs[i]] = i;
+            sigToTokenId[_orderedSigs[i]] = i+1;
         }
     }
 
