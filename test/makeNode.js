@@ -17,7 +17,7 @@ describe("makeNode", function() {
 
   it("should work as expected on actual values", async function() {
     const Minter = await ethers.getContractFactory("Minter");
-    const minter = await Minter.deploy(testRoot, '0x433A15f56e95Ee632dc690C032B5B2F7de447446');
+    const minter = await Minter.deploy(testRoot, '0x433A15f56e95Ee632dc690C032B5B2F7de447446', []);
 
     for (const root in testValues) {
       const tuple = testValues[root]

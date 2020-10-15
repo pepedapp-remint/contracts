@@ -17,11 +17,15 @@ contract Minter {
     mapping(uint256 => bool) public claimed;
 
     mapping(bytes32 => uint256) public sigToTokenId;
-    uint256 public nextTokenId = 1;
 
-    constructor(bytes32 _merkleRoot, address _tokenAddress) public {
+    constructor(bytes32 _merkleRoot, address _tokenAddress, bytes32[] memory _orderedSigs) public {
         merkleRoot = _merkleRoot;
         tokenAddress = _tokenAddress;
+
+        uint256 numSigs = _orderedSigs.length;
+        for (uint256 i = 0; i < numSigs; i++) {
+            sigToTokenId[_orderedSigs[i]] = i;
+        }
     }
 
 
@@ -51,11 +55,9 @@ contract Minter {
         bytes32 node = makeNode(index, sig, account, count);
         require(merkleVerify(node, proof), "Minter: merkle verification failed");
 
-        if (sigToTokenId[sig] == 0) {
-            sigToTokenId[sig] = nextTokenId;
-            nextTokenId++;
-        }
+        require(sigToTokenId[sig] != 0, "Minter: unrecognized sig");
         uint256 tokenId = sigToTokenId[sig];
+
         (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
             bytes4(keccak256("mint(address,uint256,uint256)")),
             account,
