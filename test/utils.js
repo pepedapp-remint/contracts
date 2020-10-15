@@ -1,7 +1,5 @@
-// Deploy a minter with *all* sigs and make sure it still works
-describe("fullMinterDeploy", function () {
-  // NOTE: *actual* list of sigs from original contract
-  const orderedSigs = [
+module.exports = {
+  testSigs: [
     "0x91781647437c48bc328f25d4c47b6f24cf8a46ab1b0f3c63704f9705178c0b5d",
     "0x2fde0bc20c20a82166355cf1b6b78d01a4411d4794703642b04d3ec0232548ca",
     "0xfa61d833ca2c8fc6f23aabbc18a23eef4e6313bc47446ecb06dbb148eefe349a",
@@ -61,11 +59,4 @@ describe("fullMinterDeploy", function () {
     "0x72eadf7aea2df67c83e46c487721e40e9f7f268da7b9b48d24a5e046f888ce4a",
     "0xe25bf6639bb98ae53654cf0d389b756304f917b948ce28218cb14916a79db6e7"
   ]
-
-  it("should construct properly with all sigs", async function() {
-    const testRoot = "0x10bdfd02a5c1d7c937adb35387f9a120039837dfcb63835a0f839445fb5010b7";
-
-    const Minter = await ethers.getContractFactory("Minter");
-    const minter = await Minter.deploy(testRoot, '0x433A15f56e95Ee632dc690C032B5B2F7de447446', orderedSigs);
-  });
-});
+}

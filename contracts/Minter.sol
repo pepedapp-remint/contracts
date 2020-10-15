@@ -18,7 +18,7 @@ contract Minter {
 
     mapping(bytes32 => uint256) public sigToTokenId;
 
-    constructor(bytes32 _merkleRoot, address _tokenAddress, bytes32[] memory _orderedSigs) public {
+    constructor(bytes32 _merkleRoot, address _tokenAddress, bytes32[58] memory _orderedSigs) public {
         merkleRoot = _merkleRoot;
         tokenAddress = _tokenAddress;
 
