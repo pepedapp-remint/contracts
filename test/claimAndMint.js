@@ -67,6 +67,8 @@ describe("claimAndMint", function() {
     expect(balance).to.equal(vals2[3]);
     const emptyBalance = await pepeV2.balanceOf(vals2[2], 1);
     expect(emptyBalance).to.equal(0);
+    const uri = await pepeV2.uri(2);
+    expect(uri).to.equal(`ipfs://ipfs/${sigToIpfsHash[vals2[1]]}`)
   });
 
   it("use the same token ID for subsequent calls with the same sig", async function() {
@@ -93,6 +95,8 @@ describe("claimAndMint", function() {
     expect(balance).to.equal(vals2[3]);
     const emptyBalance = await pepeV2.balanceOf(vals2[2], 2);
     expect(emptyBalance).to.equal(0);
+    const uri = await pepeV2.uri(1);
+    expect(uri).to.equal(`ipfs://ipfs/${sigToIpfsHash[vals2[1]]}`)
   });
 
   it("should fail if index has already been claimed", async function() {
