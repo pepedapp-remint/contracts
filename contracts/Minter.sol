@@ -63,7 +63,7 @@ contract Minter is Ownable {
         uint256 id = sigToTokenId[sig];
         if (id == 0) {
             sigToTokenId[sig] = nextId;
-            mintable.setTokenId(id, sig);
+            mintable.setTokenId(nextId, sig);
             id = nextId;
 
             nextId++;
