@@ -1,17 +1,26 @@
 const { expect } = require("chai");
 
-const { testIpfsHashes } = require("./utils");
-
-const randAddress = "0x433A15f56e95Ee632dc690C032B5B2F7de447446"
+const { testSigs, testIpfsHashes } = require("./utils");
 
 describe("pepeV2Metadata", function() {
-
-  it("should return the expected URIs for tokenIDs", async function() {
+  it("should fail in returning a URI if the token ID hasn't been set", async function() {
+    const [minter, other_addr] = await ethers.getSigners();
     const PepeV2 = await ethers.getContractFactory("PepeV2");
-    const pepeV2 = await PepeV2.deploy(randAddress, testIpfsHashes);
 
-    const uri = await pepeV2.uri(1);
-    expect(uri).to.equal("ipfs://ipfs/QmYHFCLGqq2x5LGxrFbwbnuf7rbaJZuUxcfw1Ud2nmpaEz");
+    const pepeV2 = await PepeV2.deploy(minter._address, testSigs, testIpfsHashes);
+
+    await expect(pepeV2.uri(1))
+      .to.be.revertedWith("PepeV2: Can only return URI for known token IDs");
   });
 
+  it("should return the proper URI if the token ID has been set", async function() {
+    const [minter, other_addr] = await ethers.getSigners();
+    const PepeV2 = await ethers.getContractFactory("PepeV2");
+
+    const pepeV2 = await PepeV2.deploy(minter._address, testSigs, testIpfsHashes);
+    await pepeV2.connect(minter).setTokenId(1, testSigs[0]);
+
+    const uri = await pepeV2.uri(1);
+    expect(uri).to.equal(`ipfs://ipfs/${testIpfsHashes[0]}`);
+  });
 });
