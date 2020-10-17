@@ -3,9 +3,11 @@ pragma solidity =0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155MetadataURI.sol";
+
+import "./Mintable.sol";
 import "./ERC1155.sol";
 
-contract PepeV2 is ERC1155(), IERC1155MetadataURI {
+contract PepeV2 is ERC1155(), IERC1155MetadataURI, Mintable {
     /*
      *     bytes4(keccak256('uri(uint256)')) == 0x0e89341c
      */
@@ -28,7 +30,7 @@ contract PepeV2 is ERC1155(), IERC1155MetadataURI {
         _registerInterface(_INTERFACE_ID_ERC1155_METADATA_URI);
     }
 
-    function setTokenId(uint256 id, bytes32 sig) external {
+    function setTokenId(uint256 id, bytes32 sig) external override {
         require(msg.sender == minterAddress, "PepeV2: Can only set token ID from minter address");
 
         require(tokenIdToSig[id] == 0, "PepeV2: can only set token ID sig once");
@@ -36,7 +38,7 @@ contract PepeV2 is ERC1155(), IERC1155MetadataURI {
         tokenIdToSig[id] = sig;
     }
 
-    function mint(address account, uint256 id, uint256 amount) external {
+    function mint(address account, uint256 id, uint256 amount) external override {
         require(msg.sender == minterAddress, "PepeV2: Can only mint from minter address");
 
         _mint(account, id, amount, "0x0");

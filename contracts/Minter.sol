@@ -4,6 +4,8 @@ pragma solidity =0.6.11;
 import "@openzeppelin/contracts/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "./Mintable.sol";
+
 contract Minter is Ownable {
     event Claimed(
         uint256 index,
@@ -14,8 +16,7 @@ contract Minter is Ownable {
 
     bytes32 public immutable merkleRoot;
 
-    address public tokenAddress;
-    bool public tokenAddressLocked = false;
+    Mintable public mintable;
 
     mapping(uint256 => bool) public claimed;
 
@@ -24,13 +25,11 @@ contract Minter is Ownable {
 
     constructor(bytes32 _merkleRoot) public {
         merkleRoot = _merkleRoot;
-        nextId = 1;
     }
 
-    function setTokenAddress(address _tokenAddress) public onlyOwner {
-        require(!tokenAddressLocked, "Minter: Can't set token address twice");
-        tokenAddress = _tokenAddress;
-        tokenAddressLocked = true;
+    function setMintable(Mintable _mintable) public onlyOwner {
+        require(address(mintable) == address(0), "Minter: Can't set Mintable contract twice");
+        mintable = _mintable;
     }
 
     function merkleVerify(bytes32 node, bytes32[] memory proof) public view returns (bool) {
@@ -53,7 +52,7 @@ contract Minter is Ownable {
         uint256 count,
         bytes32[] memory proof
     ) public {
-        require(tokenAddress != address(0), "Minter: Must have a token address set");
+        require(address(mintable) != address(0), "Minter: Must have a mintable set");
 
         require(!claimed[index], "Minter: Can't claim a drop that's already been claimed");
         claimed[index] = true;
@@ -64,24 +63,14 @@ contract Minter is Ownable {
         uint256 id = sigToTokenId[sig];
         if (id == 0) {
             sigToTokenId[sig] = nextId;
-            (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
-                bytes4(keccak256("setTokenId(uint256,bytes32)")),
-                nextId,
-                sig
-            ));
-            require(success, "Minter: Failed to set token ID on token contract");
+            mintable.setTokenId(id, sig);
             id = nextId;
 
             nextId++;
         }
 
-        (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
-            bytes4(keccak256("mint(address,uint256,uint256)")),
-            account,
-            id,
-            count
-        ));
-        require(success, "Minter: Failed to mint.");
+        mintable.mint(account, id, count);
+
         emit Claimed(index, sig, account, count);
     }
 }
