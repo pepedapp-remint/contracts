@@ -5,7 +5,6 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC1155/IERC1155MetadataURI.sol";
 import "./ERC1155.sol";
 
-// TODO: Set to actual URI where metadata is hosted
 contract PepeV2 is ERC1155(), IERC1155MetadataURI {
     /*
      *     bytes4(keccak256('uri(uint256)')) == 0x0e89341c

@@ -1,7 +1,5 @@
 const { expect } = require("chai");
 
-const { testSigs } = require("./utils");
-
 describe("makeNode", function() {
   const testRoot = "0x10bdfd02a5c1d7c937adb35387f9a120039837dfcb63835a0f839445fb5010b7";
 
@@ -19,7 +17,7 @@ describe("makeNode", function() {
 
   it("should work as expected on actual values", async function() {
     const Minter = await ethers.getContractFactory("Minter");
-    const minter = await Minter.deploy(testRoot, testSigs);
+    const minter = await Minter.deploy(testRoot);
 
     for (const root in testValues) {
       const tuple = testValues[root]

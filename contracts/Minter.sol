@@ -13,23 +13,24 @@ contract Minter is Ownable {
     );
 
     bytes32 public immutable merkleRoot;
+
     address public tokenAddress;
+    bool public tokenAddressLocked = false;
 
     mapping(uint256 => bool) public claimed;
 
+    uint256 public nextId = 1;
     mapping(bytes32 => uint256) public sigToTokenId;
 
-    constructor(bytes32 _merkleRoot, bytes32[58] memory _orderedSigs) public {
+    constructor(bytes32 _merkleRoot) public {
         merkleRoot = _merkleRoot;
-
-        uint256 numSigs = _orderedSigs.length;
-        for (uint256 i = 0; i < numSigs; i++) {
-            sigToTokenId[_orderedSigs[i]] = i+1;
-        }
+        nextId = 1;
     }
 
     function setTokenAddress(address _tokenAddress) public onlyOwner {
+        require(!tokenAddressLocked, "Minter: Can't set token address twice");
         tokenAddress = _tokenAddress;
+        tokenAddressLocked = true;
     }
 
     function merkleVerify(bytes32 node, bytes32[] memory proof) public view returns (bool) {
@@ -60,13 +61,24 @@ contract Minter is Ownable {
         bytes32 node = makeNode(index, sig, account, count);
         require(merkleVerify(node, proof), "Minter: merkle verification failed");
 
-        require(sigToTokenId[sig] != 0, "Minter: unrecognized sig");
-        uint256 tokenId = sigToTokenId[sig];
+        uint256 id = sigToTokenId[sig];
+        if (id == 0) {
+            sigToTokenId[sig] = nextId;
+            (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
+                bytes4(keccak256("setTokenId(uint256,bytes32)")),
+                nextId,
+                sig
+            ));
+            require(success, "Minter: Failed to set token ID on token contract");
+            id = nextId;
+
+            nextId++;
+        }
 
         (bool success, bytes memory result) = tokenAddress.call(abi.encodeWithSelector(
             bytes4(keccak256("mint(address,uint256,uint256)")),
             account,
-            tokenId,
+            id,
             count
         ));
         require(success, "Minter: Failed to mint.");
