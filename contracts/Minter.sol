@@ -2,8 +2,9 @@
 pragma solidity =0.6.11;
 
 import "@openzeppelin/contracts/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Minter {
+contract Minter is Ownable {
     event Claimed(
         uint256 index,
         bytes32 sig,
@@ -12,15 +13,14 @@ contract Minter {
     );
 
     bytes32 public immutable merkleRoot;
-    address public immutable tokenAddress;
+    address public tokenAddress;
 
     mapping(uint256 => bool) public claimed;
 
     mapping(bytes32 => uint256) public sigToTokenId;
 
-    constructor(bytes32 _merkleRoot, address _tokenAddress, bytes32[58] memory _orderedSigs) public {
+    constructor(bytes32 _merkleRoot, bytes32[58] memory _orderedSigs) public {
         merkleRoot = _merkleRoot;
-        tokenAddress = _tokenAddress;
 
         uint256 numSigs = _orderedSigs.length;
         for (uint256 i = 0; i < numSigs; i++) {
@@ -28,6 +28,9 @@ contract Minter {
         }
     }
 
+    function setTokenAddress(address _tokenAddress) public onlyOwner {
+        tokenAddress = _tokenAddress;
+    }
 
     function merkleVerify(bytes32 node, bytes32[] memory proof) public view returns (bool) {
         return MerkleProof.verify(proof, merkleRoot, node);
@@ -49,6 +52,8 @@ contract Minter {
         uint256 count,
         bytes32[] memory proof
     ) public {
+        require(tokenAddress != address(0), "Minter: Must have a token address set");
+
         require(!claimed[index], "Minter: Can't claim a drop that's already been claimed");
         claimed[index] = true;
 
