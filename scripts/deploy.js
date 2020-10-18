@@ -4,7 +4,7 @@
 // Runtime Environment's members available in the global scope.
 const bre = require("@nomiclabs/buidler");
 
-const merkleRoot = "0x8c3589d8de5a345c612b4144ff28d57a4337e53feb1a804ba5357bbc28087170";
+const merkleRoot = "0x9f12d3848cad4ef5572154ec821a3393ce99dd5e86dd589a3b51409a07e596f8";
 const sigs = [
   "0x91781647437c48bc328f25d4c47b6f24cf8a46ab1b0f3c63704f9705178c0b5d",
   "0x2fde0bc20c20a82166355cf1b6b78d01a4411d4794703642b04d3ec0232548ca",
