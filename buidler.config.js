@@ -16,6 +16,17 @@ task("accounts", "Prints the list of accounts", async () => {
 // defaultNetwork, networks, solc, and paths.
 // Go to https://buidler.dev/config/ to learn more
 module.exports = {
+  defaultNetwork: "rinkeby",
+  networks: {
+    buidlerevm: {
+    },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/46e1129337704902bc55c7b1f3315a72",
+      accounts: [
+        // INSERT PRIVATE KEY!
+      ]
+    }
+  },
   // This is a sample solc configuration that specifies which version of solc to use
   solc: {
     version: "0.6.11",
