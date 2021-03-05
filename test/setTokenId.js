@@ -7,7 +7,7 @@ describe("setTokenId", function() {
     const [minter, other_addr] = await ethers.getSigners();
     const PepeV2 = await ethers.getContractFactory("PepeV2");
 
-    const pepeV2 = await PepeV2.deploy(minter._address, testSigs, testIpfsHashes);
+    const pepeV2 = await PepeV2.deploy(minter.address, testSigs, testIpfsHashes);
 
     await expect(pepeV2.connect(other_addr).setTokenId(1, testSigs[0]))
       .to.be.revertedWith("PepeV2: Can only set token ID from minter address");
@@ -17,7 +17,7 @@ describe("setTokenId", function() {
     const [minter, other_addr] = await ethers.getSigners();
     const PepeV2 = await ethers.getContractFactory("PepeV2");
 
-    const pepeV2 = await PepeV2.deploy(minter._address, testSigs, testIpfsHashes);
+    const pepeV2 = await PepeV2.deploy(minter.address, testSigs, testIpfsHashes);
 
     await pepeV2.connect(minter).setTokenId(1, testSigs[0]);
     const sig = await pepeV2.tokenIdToSig(1);
@@ -28,7 +28,7 @@ describe("setTokenId", function() {
     const [minter, other_addr] = await ethers.getSigners();
     const PepeV2 = await ethers.getContractFactory("PepeV2");
 
-    const pepeV2 = await PepeV2.deploy(minter._address, testSigs, testIpfsHashes);
+    const pepeV2 = await PepeV2.deploy(minter.address, testSigs, testIpfsHashes);
 
     await pepeV2.connect(minter).setTokenId(1, testSigs[0]);
     await expect(pepeV2.connect(minter).setTokenId(1, testSigs[1]))
