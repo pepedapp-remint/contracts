@@ -7,6 +7,10 @@ contract Bridge {
     IPepeCore public legacyContract;
     // TODO: V3 contract
 
+    constructor(IPepeCore _legacyContract) public {
+        legacyContract = _legacyContract;
+    }
+
     function legacyToV3(bytes32 sig, uint256 count) external {
         (bool success, bytes memory data) = address(legacyContract).delegatecall(
             abi.encodeWithSignature(
@@ -16,10 +20,9 @@ contract Bridge {
                 address(this)
             )
         );
-        require(success, "Bridge: Transfer from legacy contract to bridge unsuccessful");
+        require(success, "Bridge: transfer from legacy contract to bridge unsuccessful");
 
         // TODO: mint 1155!
-
     }
 
     function V3ToLegacy() external {
